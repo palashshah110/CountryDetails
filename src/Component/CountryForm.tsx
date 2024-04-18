@@ -1,6 +1,7 @@
 import { TextField, Button, Paper, Box } from "@mui/material";
 import React, { Component } from "react";
 import withComponent from "./WithComponent.tsx";
+
 interface PropsType {
   navigate: (data: any, state: any) => void;
 }

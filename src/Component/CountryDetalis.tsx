@@ -29,20 +29,24 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
   }
   handleClick = async (latlng: [number, number]) => {
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0]}&lon=${latlng[1]}&appid=a80e7dc04639cfc4193d55970d07c503`
-      ).then((res) => res.json());
-      const { main, wind } = response;
-      const { temp } = main;
-      const { speed } = wind;
-      this.setState({ temp: temp, speed: speed,open: true });
+      const response= (await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0] ? latlng[0] : 77}&lon=${latlng[1]?latlng[1]:20}&appid=a80e7dc04639cfc4193d55970d07c503`
+      )).json();
+      const { main: { temp }, wind: { speed } } = await response;
+      this.setState({ temp:temp, speed:speed, open: true });
     } catch (err) {
       this.setState({ open: false });
     }
   };
   
   render() {
-    const { capital, population, latlng, flags } = this.props.location.state;
+    const { location } = this.props;
+  // Check if location.state exists and is not null
+  if (!location || !location.state) {
+    // Handle the case when location.state is null or undefined
+    return <div>No country details available</div>;
+  }
+    const { capital, population, latlng, flags } = location.state;
     return (
       <div
         style={{
@@ -97,6 +101,7 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
               <Button
                 variant="contained"
                 color="secondary"
+                name="goback"
                 onClick={() => this.props.navigate('/')}
                 sx={{ml:2,mt:1}}
               >
@@ -117,7 +122,7 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
             flexDirection: "column",
           }}
         >
-          <Typography>Temparature: {this.state.temp} </Typography>
+          <Typography>Temparature: {this.state.temp}</Typography>
           <Typography>Wind Speed: {this.state.speed}</Typography>
         </Paper>
       </div>
