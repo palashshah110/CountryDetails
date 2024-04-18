@@ -3,8 +3,12 @@ import React, { Component } from "react";
 import withComponent from "./WithComponent.tsx";
 
 interface PropsType {
-  navigate: (data: any, state: any) => void;
+  navigate: (
+    data: any,
+    state: any
+) => void;
 }
+
 interface CountryState {
   country: string;
   errorMessage: string;
@@ -33,14 +37,14 @@ class CountryForm extends Component<PropsType, CountryState> {
       ).then((res) => res.json());
       const { capital, population, latlng, flags } = await response[0];
       const data = { capital, population, latlng, flags };
-      this.props.navigate("/getCountryDetalis", { state: data });
+      this.props.navigate("/getCountryDetalis", {state:data});
       this.setState({ country: "" });
     } catch (err) {
       this.setState({ errorMessage: err });
     }
   };
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!/\s/.test(event.target.value)) {
+    if (!/[\s\d]/.test(event.target.value)) {
       this.setState({ country: event.target.value });
     }
   };

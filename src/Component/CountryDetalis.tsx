@@ -11,7 +11,7 @@ interface PropsType {
       population: number;
     };
   };
-  navigate:(data:any)=>void;
+  navigate:(data:string)=>void;
 }
 interface ResponseState {
   temp: number;
@@ -41,11 +41,10 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
   
   render() {
     const { location } = this.props;
-  // Check if location.state exists and is not null
-  if (!location || !location.state) {
-    // Handle the case when location.state is null or undefined
-    return <div>No country details available</div>;
-  }
+    if (!location.state) 
+    {
+      return <div>No country details available</div>;
+    }
     const { capital, population, latlng, flags } = location.state;
     return (
       <div
