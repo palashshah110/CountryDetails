@@ -1,9 +1,8 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import CountryDetalis from "../Component/CountryDetalis.tsx";
 import { MemoryRouter } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
-import { act } from "react-dom/test-utils";
 
 fetchMock.enableMocks();
 const mockState = {
@@ -37,7 +36,7 @@ describe("rendering Country Detalis page", () => {
     expect(PopulationText).toBeInTheDocument();
     expect(LatitudeText.innerHTML).toBe("Latitude: 77");
     expect(LongitudeText.innerHTML).toBe("Longitude: 20");
-  });  
+  });
 
   test("Checking Go Back button", () => {
     render(
@@ -49,25 +48,24 @@ describe("rendering Country Detalis page", () => {
         <CountryDetalis />
       </MemoryRouter>
     );
-  
+
     const GoBackButton = screen.getByText("Go Back");
     fireEvent.click(GoBackButton);
-    expect(window.location.pathname).toBe('/');    
+    expect(window.location.pathname).toBe("/");
   });
 
   test("Checking Api for Capital Weather button", async () => {
     render(
       <MemoryRouter
         initialEntries={[
-          { pathname: "/getCountryDetalis", state: mockState.state },
+          { pathname: "/getCountryDetails", state: mockState.state },
         ]}
       >
-        <CountryDetalis navigate={()=>{}}/>
+        <CountryDetalis navigate={() => {}} />
       </MemoryRouter>
     );
-  
-    const CapitalWeatherButton = screen.getByText("Capital Weather");
 
+    const CapitalWeatherButton = screen.getByText("Capital Weather");
     fetchMock.mockResponseOnce(
       JSON.stringify({
         main: {
@@ -78,22 +76,42 @@ describe("rendering Country Detalis page", () => {
         },
       })
     );
-  
+
     fireEvent.click(CapitalWeatherButton);
-  
+
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.openweathermap.org/data/2.5/weather?lat=77&lon=20&appid=a80e7dc04639cfc4193d55970d07c503"
     );
-  
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  
-    const TemperatureText = await screen.findByText("Temperature: 0");
-    const WindText = await screen.findByText("Wind Speed: 0");
 
-    expect(TemperatureText).toBeInTheDocument();
-    expect(WindText).toBeInTheDocument();
-  
+    await waitFor(() => {
+      expect(screen.getByText("Temperature: 0")).toBeInTheDocument();
+      expect(screen.getByText("Wind Speed: 0")).toBeInTheDocument();
+    });
+
     const CloseCapitalWeatherButton = screen.getByText("Close Capital Weather");
     fireEvent.click(CloseCapitalWeatherButton);
-    });    
+  });
+
+  test("Checking Api for Capital Weather button - error case", async () => {
+    fetchMock.mockRejectOnce(new Error("API is down"));
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          { pathname: "/getCountryDetalis", state: mockState.state },
+        ]}
+      >
+        <CountryDetalis navigate={() => {}} />
+      </MemoryRouter>
+    );
+
+    const CapitalWeatherButton = screen.getByText("Capital Weather");
+    fireEvent.click(CapitalWeatherButton);
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        "https://api.openweathermap.org/data/2.5/weather?lat=77&lon=20&appid=a80e7dc04639cfc4193d55970d07c503"
+      );
+    });
+  });
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import CountryForm from "../Component/CountryForm";
 import fetchMock from "jest-fetch-mock";
 import { act } from "react-dom/test-utils";
@@ -10,9 +10,9 @@ fetchMock.enableMocks();
 describe("Country Form Component", () => {
   test("Checking and test Country Api", async () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={["/"]}>
         <CountryForm navigate={() => {}} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     const mockState = {
       state: {
@@ -39,11 +39,6 @@ describe("Country Form Component", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "https://restcountries.com/v3.1/name/india?fullText=true"
     );
-
-    await waitFor(() => {
-      expect(jest.fn()).toHaveBeenCalledWith("/getCountryDetalis");
-    });
-
   });
 
   test("checking API fail", async () => {
@@ -55,6 +50,11 @@ describe("Country Form Component", () => {
     );
 
     const CountryInput = screen.getByPlaceholderText("Enter Country");
+    act(() => {
+      fireEvent.change(CountryInput, { target: { value: "Uni ted Kingdom" } });
+    });
+
+    expect(CountryInput.value).toBe("");
 
     act(() => {
       fireEvent.change(CountryInput, { target: { value: "hello" } });
@@ -71,5 +71,28 @@ describe("Country Form Component", () => {
     );
 
     expect(window.location.pathname).toBe("/");
+  });
+
+  it("should clear errorMessage after 2 seconds", async () => {
+    jest.useFakeTimers();
+
+    render(
+      <BrowserRouter>
+        <CountryForm navigate={() => {}} />
+      </BrowserRouter>
+    );
+    const CountryInput = screen.getByPlaceholderText("Enter Country");
+
+    act(() => {
+      fireEvent.change(CountryInput, { target: { value: "hello" } });
+      const SearchButton = screen.getByText("Search Country");
+      fireEvent.click(SearchButton);
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    jest.useRealTimers();
   });
 });

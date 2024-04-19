@@ -35,11 +35,9 @@ class CountryForm extends Component<PropsType, CountryState> {
       const response = await fetch(
         `https://restcountries.com/v3.1/name/${this.state.country.toLowerCase()}?fullText=true`
       ).then((res) => res.json());
-      const { capital, population, latlng, flags } = await response[0];
-      const data = { capital, population, latlng, flags };
-      this.props.navigate("/getCountryDetalis", {state:data});
+      this.props.navigate("/getCountryDetalis", {state:await response[0]});
     } catch (err) {
-      this.setState({ errorMessage: "error Found" });
+      this.setState({ errorMessage: "Error Found" });
     }
   };
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

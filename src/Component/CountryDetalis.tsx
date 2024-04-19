@@ -29,11 +29,8 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
   }
   handleClick = async (latlng: [number, number]) => {
     try {
-      const response= (await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0] ? latlng[0] : 77}&lon=${latlng[1]?latlng[1]:20}&appid=a80e7dc04639cfc4193d55970d07c503`
-      )).json();
-      const { main: { temp }, wind: { speed } } = await response;
-      this.setState({ temp:temp, speed:speed, open: true });
+      const { main: { temp }, wind: { speed } } = await (await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0]}&lon=${latlng[1]}&appid=a80e7dc04639cfc4193d55970d07c503`)).json();
+      this.setState({ temp, speed, open: true });      
     } catch (err) {
       this.setState({ open: false });
     }
