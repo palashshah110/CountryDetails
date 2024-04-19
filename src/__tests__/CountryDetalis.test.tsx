@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
 
 fetchMock.enableMocks();
+
 const mockState = {
   state: {
     capital: ["new delhi"],

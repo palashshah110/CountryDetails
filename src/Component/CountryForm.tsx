@@ -65,7 +65,6 @@ class CountryForm extends Component<PropsType, CountryState> {
         >
           <TextField
             variant="outlined"
-            label={this.state.country === "" ? "Enter Country Name" : ""}
             placeholder="Enter Country"
             color="info"
             value={this.state.country}
