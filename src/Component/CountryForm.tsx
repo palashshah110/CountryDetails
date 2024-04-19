@@ -4,7 +4,7 @@ import withComponent from "./WithComponent.tsx";
 
 interface PropsType {
   navigate: (
-    data: any,
+    data: string,
     state: any
 ) => void;
 }
@@ -38,9 +38,8 @@ class CountryForm extends Component<PropsType, CountryState> {
       const { capital, population, latlng, flags } = await response[0];
       const data = { capital, population, latlng, flags };
       this.props.navigate("/getCountryDetalis", {state:data});
-      this.setState({ country: "" });
     } catch (err) {
-      this.setState({ errorMessage: err });
+      this.setState({ errorMessage: "error Found" });
     }
   };
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

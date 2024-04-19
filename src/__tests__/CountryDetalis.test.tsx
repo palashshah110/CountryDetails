@@ -1,8 +1,9 @@
 import React from "react";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import CountryDetalis from "../Component/CountryDetalis.tsx";
 import { MemoryRouter } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
+import { act } from "react-dom/test-utils";
 
 fetchMock.enableMocks();
 const mockState = {
@@ -86,12 +87,13 @@ describe("rendering Country Detalis page", () => {
   
     expect(fetchMock).toHaveBeenCalledTimes(1);
   
-    const TemparatureText = await screen.findByText("Temparature: 0");
+    const TemperatureText = await screen.findByText("Temperature: 0");
     const WindText = await screen.findByText("Wind Speed: 0");
-    expect(TemparatureText).toBeInTheDocument();
+
+    expect(TemperatureText).toBeInTheDocument();
     expect(WindText).toBeInTheDocument();
   
     const CloseCapitalWeatherButton = screen.getByText("Close Capital Weather");
     fireEvent.click(CloseCapitalWeatherButton);
-  });    
+    });    
 });

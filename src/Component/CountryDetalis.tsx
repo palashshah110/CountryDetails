@@ -121,7 +121,7 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
             flexDirection: "column",
           }}
         >
-          <Typography>Temparature: {this.state.temp}</Typography>
+          <Typography>Temperature: {this.state.temp}</Typography>
           <Typography>Wind Speed: {this.state.speed}</Typography>
         </Paper>
       </div>
