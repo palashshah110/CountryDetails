@@ -1,10 +1,9 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import {  MemoryRouter } from "react-router-dom";
 import CountryForm from "../Component/CountryForm";
 import fetchMock from "jest-fetch-mock";
 import { act } from "react-dom/test-utils";
-
 fetchMock.enableMocks();
 
 describe("Country Form Component", () => {
@@ -44,9 +43,9 @@ describe("Country Form Component", () => {
   test("checking API fail", async () => {
     fetchMock.mockRejectOnce(() => Promise.reject("API error"));
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={["/"]}>
         <CountryForm navigate={() => {}} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
 
     const CountryInput = screen.getByPlaceholderText("Enter Country");
@@ -77,9 +76,9 @@ describe("Country Form Component", () => {
     jest.useFakeTimers();
 
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={["/"]}>
         <CountryForm navigate={() => {}} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     const CountryInput = screen.getByPlaceholderText("Enter Country");
 

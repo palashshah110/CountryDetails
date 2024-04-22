@@ -7,7 +7,7 @@ interface PropsType {
     state: {
       capital: [string];
       flags: { png: string; svg: string; alt: string };
-      latlng: [number, number];
+      latlng: number[];
       population: number;
     };
   };
@@ -27,10 +27,10 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
       open: false,
     };
   }
-  handleClick = async (latlng: [number, number]) => {
+  handleClick = async (latlng: number[]) => {
     try {
       const { main: { temp }, wind: { speed } } = await (await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0]}&lon=${latlng[1]}&appid=a80e7dc04639cfc4193d55970d07c503`)).json();
-      this.setState({ temp, speed, open: true });      
+      this.setState({ temp, speed, open: true });
     } catch (err) {
       this.setState({ open: false });
     }
@@ -118,7 +118,7 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
             flexDirection: "column",
           }}
         >
-          <Typography>Temperature: {this.state.temp}</Typography>
+          <Typography >Temperature: {this.state.temp}</Typography>
           <Typography>Wind Speed: {this.state.speed}</Typography>
         </Paper>
       </div>

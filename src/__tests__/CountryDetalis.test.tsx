@@ -3,9 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import CountryDetalis from "../Component/CountryDetalis.tsx";
 import { MemoryRouter } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
-
 fetchMock.enableMocks();
-
 const mockState = {
   state: {
     capital: ["new delhi"],
@@ -16,6 +14,9 @@ const mockState = {
 };
 
 describe("rendering Country Detalis page", () => {
+  beforeEach(() => {
+    fetchMock.resetMocks()
+  })
   test("Displaying all the state data", () => {
     render(
       <MemoryRouter
@@ -56,7 +57,7 @@ describe("rendering Country Detalis page", () => {
   });
 
   test("Checking Api for Capital Weather button", async () => {
-    render(
+     render(
       <MemoryRouter
         initialEntries={[
           { pathname: "/getCountryDetails", state: mockState.state },
@@ -65,29 +66,28 @@ describe("rendering Country Detalis page", () => {
         <CountryDetalis navigate={() => {}} />
       </MemoryRouter>
     );
-
-    const CapitalWeatherButton = screen.getByText("Capital Weather");
     fetchMock.mockResponseOnce(
       JSON.stringify({
         main: {
-          temp: 0,
+          temp: 20,
         },
         wind: {
-          speed: 0,
+          speed: 20,
         },
       })
     );
 
+    const CapitalWeatherButton = screen.getByText("Capital Weather");
     fireEvent.click(CapitalWeatherButton);
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.openweathermap.org/data/2.5/weather?lat=77&lon=20&appid=a80e7dc04639cfc4193d55970d07c503"
-    );
-
     await waitFor(() => {
-      expect(screen.getByText("Temperature: 0")).toBeInTheDocument();
-      expect(screen.getByText("Wind Speed: 0")).toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledWith(
+        "https://api.openweathermap.org/data/2.5/weather?lat=77&lon=20&appid=a80e7dc04639cfc4193d55970d07c503"
+      );
     });
+  
+    expect(screen.getByText("Temperature: 0")).toBeInTheDocument();
+    expect(screen.getByText("Wind Speed: 0")).toBeInTheDocument();
 
     const CloseCapitalWeatherButton = screen.getByText("Close Capital Weather");
     fireEvent.click(CloseCapitalWeatherButton);
@@ -115,4 +115,5 @@ describe("rendering Country Detalis page", () => {
       );
     });
   });
+
 });
