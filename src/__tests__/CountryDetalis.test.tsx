@@ -13,6 +13,7 @@ const mockState = {
   },
 };
 
+
 describe("rendering Country Detalis page", () => {
   beforeEach(() => {
     fetchMock.resetMocks()

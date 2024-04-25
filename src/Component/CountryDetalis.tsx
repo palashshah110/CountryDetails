@@ -37,12 +37,11 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
   };
   
   render() {
-    const { location } = this.props;
-    if (!location.state) 
+    if (!this.props.location.state) 
     {
       return <div>No country details available</div>;
     }
-    const { capital, population, latlng, flags } = location.state;
+    const { capital, population, latlng, flags } = this.props.location.state;
     return (
       <div
         style={{
@@ -75,7 +74,7 @@ class CountryDetalis extends Component<PropsType, ResponseState> {
             <Typography title="lat">Latitude: {latlng[0]}</Typography>
             <Typography title="lon">Longitude: {latlng[1]}</Typography>
             <Typography>
-              Flags: <img src={flags.png} alt={flags.alt} />
+              Flags: <img src={flags.png} alt={flags.alt} height={'210px'}/>
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button

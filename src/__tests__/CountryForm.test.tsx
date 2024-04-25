@@ -28,10 +28,10 @@ describe("Country Form Component", () => {
     });
 
     const CountryInput = screen.getByPlaceholderText("Enter Country");
+    const SearchButton = screen.getByText("Search Country");
     fireEvent.change(CountryInput, { target: { value: "india" } });
 
     expect(CountryInput.value).toBe("india");
-    const SearchButton = screen.getByText("Search Country");
 
     fireEvent.click(SearchButton);
 
@@ -55,12 +55,12 @@ describe("Country Form Component", () => {
 
     expect(CountryInput.value).toBe("");
 
-    act(() => {
+    await act(() => {
       fireEvent.change(CountryInput, { target: { value: "hello" } });
       const SearchButton = screen.getByText("Search Country");
       fireEvent.click(SearchButton);
     });
-
+    
     await waitFor(() => {
       expect(screen.getByText("Not Found: hello")).toBeInTheDocument();
     });
@@ -80,6 +80,7 @@ describe("Country Form Component", () => {
         <CountryForm navigate={() => {}} />
       </MemoryRouter>
     );
+    
     const CountryInput = screen.getByPlaceholderText("Enter Country");
 
     act(() => {
